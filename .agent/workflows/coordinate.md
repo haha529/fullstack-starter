@@ -4,12 +4,14 @@ description: Coordinate multiple agents for a complex multi-domain project using
 
 # MANDATORY RULES — VIOLATION IS FORBIDDEN
 
-- **All responses MUST be written in English.** Do NOT respond in Korean.
+- **Response language follows `language` setting in `.agent/config/user-preferences.yaml` if configured.**
 - **NEVER skip steps.** Execute from Step 0 in order. Explicitly report completion of each step to the user before proceeding to the next.
-- **You MUST use Serena MCP tools throughout the entire workflow.** This is NOT optional.
-  - Use `get_symbols_overview`, `find_symbol`, `find_referencing_symbols`, `search_for_pattern` for code exploration.
-  - Use `read_memory`, `write_memory`, `edit_memory` for progress tracking in `.serena/memories/`.
-  - Do NOT use raw file reads or grep as substitutes. Serena MCP is the primary interface for code and memory operations.
+- **You MUST use MCP tools throughout the entire workflow.** This is NOT optional.
+  - Use code analysis tools (`get_symbols_overview`, `find_symbol`, `find_referencing_symbols`, `search_for_pattern`) for code exploration.
+  - Use memory tools (read/write/edit) for progress tracking.
+  - Memory path: configurable via `memoryConfig.basePath` (default: `.serena/memories`)
+  - Tool names: configurable via `memoryConfig.tools` in `mcp.json`
+  - Do NOT use raw file reads or grep as substitutes. MCP tools are the primary interface for code and memory operations.
 - **Read the workflow-guide BEFORE starting.** Read `.agent/skills/workflow-guide/SKILL.md` and follow its Core Rules.
 - **Follow the context-loading guide.** Read `.agent/skills/_shared/context-loading.md` and load only task-relevant resources.
 
@@ -19,9 +21,9 @@ description: Coordinate multiple agents for a complex multi-domain project using
 
 1. Read `.agent/skills/workflow-guide/SKILL.md` and confirm Core Rules.
 2. Read `.agent/skills/_shared/context-loading.md` for resource loading strategy.
-3. Read `.agent/skills/_shared/serena-memory-protocol.md` for memory protocol.
-4. Record session start in Serena Memory:
-   - Use `write_memory` to create `session-coordinate.md` in `.serena/memories/`
+3. Read `.agent/skills/_shared/memory-protocol.md` for memory protocol.
+4. Record session start using memory write tool:
+   - Create `session-coordinate.md` in the memory base path
    - Include: session start time, user request summary.
 
 ---
@@ -29,9 +31,10 @@ description: Coordinate multiple agents for a complex multi-domain project using
 ## Step 1: Analyze Requirements
 
 Analyze the user's request and identify involved domains (frontend, backend, mobile, QA).
+
 - Single domain: suggest using the specific agent directly.
 - Multiple domains: proceed to Step 2.
-- Use Serena MCP `get_symbols_overview` or `search_for_pattern` to understand the existing codebase structure relevant to the request.
+- Use MCP code analysis tools (`get_symbols_overview` or `search_for_pattern`) to understand the existing codebase structure relevant to the request.
 - Report analysis results to the user.
 
 ---
@@ -40,17 +43,19 @@ Analyze the user's request and identify involved domains (frontend, backend, mob
 
 // turbo
 Activate PM Agent to:
+
 1. Analyze requirements.
 2. Define API contracts.
 3. Create a prioritized task breakdown.
 4. Save plan to `.agent/plan.json`.
-5. Use `write_memory` to record plan completion in Serena Memory.
+5. Use memory write tool to record plan completion.
 
 ---
 
 ## Step 3: Review Plan with User
 
 Present the PM Agent's task breakdown to the user:
+
 - Priorities (P0, P1, P2)
 - Agent assignments
 - Dependencies
@@ -60,26 +65,34 @@ Present the PM Agent's task breakdown to the user:
 
 ## Step 4: Spawn Agents by Priority Tier
 
-Guide the user to Agent Manager (Mission Control):
-1. Open Agent Manager panel.
-2. Click 'New Agent' for each task.
-3. Select the matching skill and paste the task description.
-4. Spawn all same-priority tasks in parallel.
-5. Assign separate workspaces to avoid file conflicts.
+// turbo
+Spawn agents using CLI for each task:
+
+```bash
+# Example: spawn backend and frontend in parallel
+oh-my-ag agent:spawn backend "task description" session-id ./backend &
+oh-my-ag agent:spawn frontend "task description" session-id ./frontend &
+wait
+```
+
+1. Use spawn-agent.sh for each task (respects agent_cli_mapping from user-preferences.yaml)
+2. Spawn all same-priority tasks in parallel using background processes
+3. Assign separate workspaces to avoid file conflicts
 
 ---
 
 ## Step 5: Monitor Agent Progress
 
-- Watch Agent Manager inbox for questions.
-- Use Serena MCP `find_symbol` and `search_for_pattern` to verify API contract alignment between agents.
-- Use `edit_memory` to record monitoring results in Serena Memory.
+- Use memory read tool to poll `progress-{agent}.md` files
+- Use MCP code analysis tools (`find_symbol` and `search_for_pattern`) to verify API contract alignment between agents
+- Use memory edit tool to record monitoring results
 
 ---
 
 ## Step 6: Run QA Agent Review
 
 After all implementation agents complete, spawn QA Agent to review all deliverables:
+
 - Security (OWASP Top 10)
 - Performance
 - Accessibility (WCAG 2.1 AA)
@@ -90,7 +103,8 @@ After all implementation agents complete, spawn QA Agent to review all deliverab
 ## Step 7: Address Issues and Iterate
 
 If QA finds CRITICAL or HIGH issues:
+
 1. Re-spawn the responsible agent with QA findings.
 2. Repeat Steps 5-7.
 3. Continue until all critical issues are resolved.
-4. Use `write_memory` to record final results in Serena Memory.
+4. Use memory write tool to record final results.
