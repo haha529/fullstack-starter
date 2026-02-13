@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.10.0](https://github.com/first-fluke/fullstack-starter/compare/v2.9.0...v2.10.0) (2026-02-13)
+
+
+### Features
+
+* enhance agent orchestration with clarification ([eda86ac](https://github.com/first-fluke/fullstack-starter/commit/eda86ac71bd04d4ec1069ddd454de501844dc45a))
+
 ## [2.9.0](https://github.com/first-fluke/fullstack-starter/compare/v2.8.0...v2.9.0) (2026-02-12)
 
 
