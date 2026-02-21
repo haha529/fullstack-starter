@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.11.0](https://github.com/first-fluke/fullstack-starter/compare/v2.10.0...v2.11.0) (2026-02-21)
+
+
+### Features
+
+* introduce new skills and resources for developer workflow ([1265067](https://github.com/first-fluke/fullstack-starter/commit/12650670256e9f9b1501247b831afc2074e3bf1f))
+
 ## [2.10.0](https://github.com/first-fluke/fullstack-starter/compare/v2.9.0...v2.10.0) (2026-02-13)
 
 
