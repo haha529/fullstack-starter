@@ -122,10 +122,10 @@ See `../_shared/memory-protocol.md`.
 - Prompt template: `resources/subagent-prompt-template.md`
 - Memory schema: `resources/memory-schema.md`
 - Config: `config/cli-config.yaml`
-- Scripts: `scripts/spawn-agent.sh`, `scripts/parallel-run.sh`
+- Scripts: `scripts/spawn-agent.sh`, `scripts/parallel-run.sh`, `scripts/verify.sh`
 - Task templates: `templates/`
 - Skill routing: `../_shared/skill-routing.md`
-- Verification: `oh-my-ag verify <agent-type>`
+- Verification: `scripts/verify.sh <agent-type>`
 - Session metrics: `../_shared/session-metrics.md`
 - API contracts: `../_shared/api-contracts/`
 - Context loading: `../_shared/context-loading.md`
